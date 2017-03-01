@@ -26,22 +26,22 @@ def check_surrounding(point, grid):
 
         if each is 'right':
             new_point = Point(x=point.x + 1, y=point.y)
-            if valid_point(new_point, grid) is True:
+            if valid_point(new_point, grid):
                 return new_point, 'right'
 
         elif each is 'left':
             new_point = Point(x=point.x - 1, y=point.y)
-            if valid_point(new_point, grid) is True:
+            if valid_point(new_point, grid):
                 return new_point, 'left'
 
         elif each is 'up':
             new_point = Point(x=point.x, y=point.y - 1)
-            if valid_point(new_point, grid) is True:
+            if valid_point(new_point, grid):
                 return new_point, 'up'
 
         elif each is 'down':
             new_point = Point(x=point.x, y=point.y + 1)
-            if valid_point(new_point, grid) is True:
+            if valid_point(new_point, grid):
                 return new_point, 'down'
 
     return False
@@ -51,6 +51,7 @@ def recursive_backtracker(current_point, grid):
 
     stack = []
     current_direction = 1
+    last_direction = 1
     direction_to_number = {'right': 1, 'left': 2, 'up': 3, 'down': 4}
 
     while True:
@@ -62,13 +63,14 @@ def recursive_backtracker(current_point, grid):
             new_point, direction = check_result
             current_direction = direction_to_number[direction]
 
-            grid[current_point] = current_direction
+            grid[current_point] = last_direction
             grid[new_point] = current_direction
+
             current_point = new_point
+            last_direction = current_direction
         else:
             try:
                 current_point = stack.pop()
-                continue
             except IndexError:
                 break
 
