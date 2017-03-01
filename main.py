@@ -1,72 +1,93 @@
-import time
 import random
 import numpy as np
-import subprocess as sp
 from collections import namedtuple
 
-WIDTH, HEIGHT = 40, 40
+WIDTH = 10
+HEIGHT = 10
 
-grid = np.full((WIDTH, HEIGHT), 'N', dtype=str)
+grid = np.full((WIDTH, HEIGHT), 0)
 
-point = namedtuple('Point', ['x', 'y'])
-
-
-def directions_iterator():
-    directions = ['→', '←', '↓', '↑']
-
-    random.shuffle(directions)
-
-    for each in directions:
-        yield each
+Point = namedtuple('Point', ['x', 'y'])
 
 
-new_direction_x = {'→': 1, '←': -1, '↓': 0, '↑': 0}
-new_direction_y = {'→': 0, '←': 0, '↓': -1, '↑': 1}
-
-opposite_direction = {'→': '←', '←': '→', '↑': '↓', '↓': '↑'}
-
-
-def carve_passages_from(current_point, grid):
-    # print(grid)
-    # time.sleep(.01)
-    # _ = sp.call('clear', shell=True)
-
-    for each in directions_iterator():
-
-        new_point = point(current_point.x + new_direction_x[each],
-                          current_point.y + new_direction_y[each])
-
-        if 0 <= new_point.x <= (WIDTH - 1) and 0 <= new_point.y <= (HEIGHT - 1) and grid[new_point.x][new_point.y] == 'N':
-            if new_direction_x[each] == 1:
-                arrow = '→'
-            elif new_direction_x[each] == -1:
-                arrow = '←'
-            elif new_direction_y[each] == 1:
-                arrow = '↑'
-            elif new_direction_y[each] == -1:
-                arrow = '↓'
-            print(arrow)
-
-            grid[current_point.x][current_point.y] = arrow
-            grid[new_point.x][new_point.y] = opposite_direction[arrow]
-
-            carve_passages_from(new_point, grid)
+def valid_point(point, grid):
+    if 0 <= point.x <= (WIDTH - 1) and 0 <= point.y <= (HEIGHT - 1):
+        if grid[point] == 0:
+            return True
+    return False
 
 
-carve_passages_from(point(0, 0), grid)
+def check_surrounding(point, grid):
+    random_directions = ['right', 'left', 'top', 'bottom']
 
+    random.shuffle(random_directions)
+
+    for each in random_directions:
+        if each is 'right':
+            new_point = Point(x=point.x + 1, y=point.y)
+            if valid_point(new_point, grid) is True:
+                return new_point, 1
+
+        elif each is 'left':
+            new_point = Point(x=point.x + -1, y=point.y)
+            if valid_point(new_point, grid) is True:
+                return new_point, 2
+
+        elif each is 'top':
+            new_point = Point(x=point.x, y=point.y + -1)
+            if valid_point(new_point, grid) is True:
+                return new_point, 3
+
+        elif each is 'bottom':
+            new_point = Point(x=point.x, y=point.y + 1)
+            if valid_point(new_point, grid) is True:
+                return new_point, 4
+
+    return False
+
+
+def recursive_backtracker(current_point, grid):
+    stack = []
+    direction = 1
+
+    while True:
+
+        grid[current_point] = direction
+        check_result = check_surrounding(current_point, grid)
+
+        if check_result:
+            stack.append(current_point)
+            current_point, direction = check_result
+        else:
+            try:
+                current_point = stack.pop()
+                continue
+            except IndexError:
+                break
+
+
+recursive_backtracker(Point(0, 0), grid)
 
 print(grid)
 
-for y in range(HEIGHT):
-    print('|', end='')
-    for x in range(WIDTH):
-        if grid[y][x] == '→':
-            print('```', end='')
-        elif grid[y][x] == '←':
-            print('___', end='')
-        elif grid[y][x] == '↑':
-            print('| |', end='')
-        elif grid[y][x] == '↓':
-            print('| |', end='')
-    print('|')
+
+def print_maze(grid):
+    for row in grid:
+        print('|', end='')
+        for direction in row:
+            # right
+            if direction == 1:
+                print(' |', end='')
+            # left
+            elif direction == 2:
+                print('| ', end='')
+            # top
+            elif direction == 3:
+                print('``', end='')
+            # bottom
+            elif direction == 4:
+                print('__', end='')
+        print('|')
+
+
+print_maze(grid)
