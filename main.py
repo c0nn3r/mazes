@@ -1,3 +1,5 @@
+import os
+import time
 import random
 import numpy as np
 from collections import namedtuple
@@ -5,14 +7,14 @@ from collections import namedtuple
 WIDTH = 10
 HEIGHT = 10
 
-grid = np.full((WIDTH, HEIGHT), 0)
+grid = np.full((HEIGHT, WIDTH), ' ', dtype=str)
 
-Point = namedtuple('Point', ['x', 'y'])
+Point = namedtuple('Point', ['y', 'x'])
 
 
 def valid_point(point, grid):
     if 0 <= point.x <= (WIDTH - 1) and 0 <= point.y <= (HEIGHT - 1):
-        if grid[point] == 0:
+        if grid[point] == ' ':
             return True
     return False
 
@@ -52,9 +54,12 @@ def recursive_backtracker(current_point, grid):
     stack = []
     current_direction = 1
     last_direction = 1
-    direction_to_number = {'right': 1, 'left': 2, 'up': 3, 'down': 4}
+    direction_to_number = {'right': '>', 'left': '<', 'up': '^', 'down': 'v'}
 
     while True:
+        os.system('clear')
+        print(grid)
+        time.sleep(.1)
 
         check_result = check_surrounding(current_point, grid)
 
@@ -76,5 +81,3 @@ def recursive_backtracker(current_point, grid):
 
 
 recursive_backtracker(Point(0, 0), grid)
-
-print(grid)
