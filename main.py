@@ -18,46 +18,53 @@ def valid_point(point, grid):
 
 
 def check_surrounding(point, grid):
-    random_directions = ['right', 'left', 'top', 'bottom']
+    random_directions = ['right', 'left', 'up', 'down']
 
     random.shuffle(random_directions)
 
     for each in random_directions:
+
         if each is 'right':
             new_point = Point(x=point.x + 1, y=point.y)
             if valid_point(new_point, grid) is True:
-                return new_point, 1
+                return new_point, 'right'
 
         elif each is 'left':
-            new_point = Point(x=point.x + -1, y=point.y)
+            new_point = Point(x=point.x - 1, y=point.y)
             if valid_point(new_point, grid) is True:
-                return new_point, 2
+                return new_point, 'left'
 
-        elif each is 'top':
-            new_point = Point(x=point.x, y=point.y + -1)
+        elif each is 'up':
+            new_point = Point(x=point.x, y=point.y - 1)
             if valid_point(new_point, grid) is True:
-                return new_point, 3
+                return new_point, 'up'
 
-        elif each is 'bottom':
+        elif each is 'down':
             new_point = Point(x=point.x, y=point.y + 1)
             if valid_point(new_point, grid) is True:
-                return new_point, 4
+                return new_point, 'down'
 
     return False
 
 
 def recursive_backtracker(current_point, grid):
+
     stack = []
-    direction = 1
+    current_direction = 1
+    direction_to_number = {'right': 1, 'left': 2, 'up': 3, 'down': 4}
 
     while True:
 
-        grid[current_point] = direction
         check_result = check_surrounding(current_point, grid)
 
         if check_result:
             stack.append(current_point)
-            current_point, direction = check_result
+            new_point, direction = check_result
+            current_direction = direction_to_number[direction]
+
+            grid[current_point] = current_direction
+            grid[new_point] = current_direction
+            current_point = new_point
         else:
             try:
                 current_point = stack.pop()
@@ -69,25 +76,3 @@ def recursive_backtracker(current_point, grid):
 recursive_backtracker(Point(0, 0), grid)
 
 print(grid)
-
-
-def print_maze(grid):
-    for row in grid:
-        print('|', end='')
-        for direction in row:
-            # right
-            if direction == 1:
-                print(' |', end='')
-            # left
-            elif direction == 2:
-                print('| ', end='')
-            # top
-            elif direction == 3:
-                print('``', end='')
-            # bottom
-            elif direction == 4:
-                print('__', end='')
-        print('|')
-
-
-print_maze(grid)
