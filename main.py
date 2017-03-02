@@ -49,11 +49,11 @@ def check_surrounding(point, grid):
     return False
 
 
-def recursive_backtracker(current_point, grid):
+def recursive_backtracker(current_point, grid): # TODO: Fix
 
     stack = []
     current_direction = 1
-    last_direction = 1
+    last_direction = '>'
     direction_to_number = {'right': '>', 'left': '<', 'up': '^', 'down': 'v'}
 
     while True:
