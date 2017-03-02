@@ -49,7 +49,7 @@ def check_surrounding(point, grid):
     return False
 
 
-def recursive_backtracker(starting_point, grid): # TODO: Fix
+def recursive_backtracker(starting_point, grid):
 
     stack = []
     current_point = starting_point
@@ -97,8 +97,8 @@ def scan(grid_line_partial, dir_num):
     return scan_val
 
 def grid_line_walls(grid_line, dir_num1, dir_num2):
-    a = scan(grid_line[:len(grid_line)-1], dir_num1)
-    b = scan(grid_line[1:], dir_num2)
+    a = scan(grid_line[1:], dir_num1)
+    b = scan(grid_line[:len(grid_line)-1], dir_num2)
     return a & b
 
 def grid_walls(grid):
@@ -109,7 +109,7 @@ def grid_walls(grid):
 
 recursive_backtracker(Point(0, 0), grid)
 
-test_grid = np.array([['>','v','v','<'],
-                      ['v','<','x','^'],
-                      ['v','>','v','^'],
-                      ['>','^','>','^']])
+test_grid = np.array([['>','>','<','^'],
+                      ['<','v','v','^'],
+                      ['v','^','>','^'],
+                      ['v','>','v','>']])
