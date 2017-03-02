@@ -83,9 +83,11 @@ def recursive_backtracker(starting_point, grid): # TODO: Fix
                 current_point = stack.pop()
             except IndexError:
                 break
+        '''
         os.system('clear')
         print(grid)
         time.sleep(.5)
+        '''
 
 def scan(grid_line_partial, dir_num):
     scan_val = 0
