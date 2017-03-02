@@ -88,9 +88,20 @@ def scan(grid_line_partial, dir_num):
         scan_val |= each != dir_num
     return scan_val
 
-def wall_profile(grid_line, dir_num1, dir_num2):
+def grid_line_walls(grid_line, dir_num1, dir_num2):
     a = scan(grid_line[:len(grid_line)-1], dir_num1)
     b = scan(grid_line[1:], dir_num2)
     return a & b
 
+def grid_walls(grid):
+    vertical_walls = [grid_line_walls(list(row), '>', '<') for row in grid]
+    swapped_grid = np.swapaxes(grid, 0, 1)
+    horizontal_walls = [grid_line_walls(list(column), 'v', '^') for column in swapped_grid]
+    return (vertical_walls, horizontal_walls)
+
 recursive_backtracker(Point(0, 0), grid)
+
+test_grid = np.array([['>','v','v','<'],
+                      ['v','<','x','^'],
+                      ['v','>','v','^'],
+                      ['>','^','>','^']])
