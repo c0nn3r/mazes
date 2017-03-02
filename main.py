@@ -97,7 +97,7 @@ def grid_walls(grid):
     vertical_walls = [grid_line_walls(list(row), '>', '<') for row in grid]
     swapped_grid = np.swapaxes(grid, 0, 1)
     horizontal_walls = [grid_line_walls(list(column), 'v', '^') for column in swapped_grid]
-    return (vertical_walls, horizontal_walls)
+    return vertical_walls, horizontal_walls
 
 recursive_backtracker(Point(0, 0), grid)
 
