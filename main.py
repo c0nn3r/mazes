@@ -13,7 +13,7 @@ Point = namedtuple('Point', ['y', 'x'])
 
 
 def valid_point(point, grid):
-    if 0 <= point.x <= (WIDTH - 1) and 0 <= point.y <= (HEIGHT - 1):
+    if 0 <= point.x <= (grid.shape[1] - 1) and 0 <= point.y <= (grid.shape[0] - 1):
         if grid[point] == ' ':
             return True
     return False
@@ -86,7 +86,7 @@ def recursive_backtracker(starting_point, grid):
         '''
         os.system('clear')
         print(grid)
-        time.sleep(.5)
+        time.sleep(.1)
         '''
 
 def scan(grid_line_partial, dir_num):
