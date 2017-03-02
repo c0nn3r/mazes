@@ -81,20 +81,16 @@ def recursive_backtracker(current_point, grid):
             except IndexError:
                 break
 
-def scan(grid_line, dir_num):
+def scan(grid_line_partial, dir_num):
     scan_val = 0
-    for each in grid_line[:len(grid_line)-1]:
+    for each in grid_line_partial:
         scan_val <<= 1
         scan_val |= each != dir_num
     return scan_val
 
-def back_scan(grid_line, dir_num):
-    back_scan_val = scan(grid_line[::-1], dir_num)
-    return int('{:0{width}b}'.format(back_scan_val, width=len(grid_line)-1)[::-1], 2)
-
 def wall_profile(grid_line, dir_num1, dir_num2):
-    a = scan(grid_line, dir_num1)
-    b = back_scan(grid_line, dir_num2)
+    a = scan(grid_line[:len(grid_line)-1], dir_num1)
+    b = scan(grid_line[1:], dir_num2)
     return a & b
 
 recursive_backtracker(Point(0, 0), grid)
