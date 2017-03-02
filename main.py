@@ -55,15 +55,17 @@ def recursive_backtracker(starting_point, grid): # TODO: Fix
     current_point = starting_point
     last_direction_char = '>'
     direction_to_char = {'right': '>', 'left': '<', 'up': '^', 'down': 'v'}
+    backtracking = False
 
     while True:
-        os.system('clear')
-        print(grid)
-        time.sleep(.1)
 
         check_result = check_surrounding(current_point, grid)
 
         if check_result:
+            if backtracking:
+                last_direction_char = grid[current_point]
+            backtracking = False
+
             stack.append(current_point)
             new_point, new_direction_num = check_result
             new_direction_char = direction_to_char[new_direction_num]
@@ -74,9 +76,16 @@ def recursive_backtracker(starting_point, grid): # TODO: Fix
             last_direction_char = new_direction_char
         else:
             try:
+                if not backtracking:
+                    grid[current_point] = last_direction_char
+                backtracking = True
+                
                 current_point = stack.pop()
             except IndexError:
                 break
+        os.system('clear')
+        print(grid)
+        time.sleep(.5)
 
 
         '''
