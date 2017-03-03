@@ -69,7 +69,7 @@ def recursive_backtracker(starting_point, grid):
 
     stack = []
     current_point = starting_point
-    last_direction_char = '>'
+    last_direction_char = ' '
     direction_to_char = {'right': '>', 'left': '<', 'up': '^', 'down': 'v'}
     backtracking = False
 
