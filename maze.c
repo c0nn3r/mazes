@@ -1069,14 +1069,10 @@ static void __Pyx_BufFmt_Init(__Pyx_BufFmt_Context* ctx,
                               __Pyx_BufFmt_StackElem* stack,
                               __Pyx_TypeInfo* type); // PROTO
 
-/* PyIntBinop.proto */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, long intval, int inplace);
-#else
-#define __Pyx_PyInt_EqObjC(op1, op2, intval, inplace)\
-    PyObject_RichCompare(op1, op2, Py_EQ)
-    #endif
+/* BufferIndexError.proto */
+static void __Pyx_RaiseBufferIndexError(int axis);
 
+#define __Pyx_BufPtrStrided2d(type, buf, i0, s0, i1, s1) (type)((char*)buf + i0 * s0 + i1 * s1)
 /* PyThreadStateGet.proto */
 #if CYTHON_FAST_THREAD_STATE
 #define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
@@ -1136,6 +1132,14 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject
 
 /* PyObjectCallOneArg.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
+
+/* PyIntBinop.proto */
+#if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, long intval, int inplace);
+#else
+#define __Pyx_PyInt_EqObjC(op1, op2, intval, inplace)\
+    PyObject_RichCompare(op1, op2, Py_EQ)
+    #endif
 
 /* PyIntBinop.proto */
 #if !CYTHON_COMPILING_IN_PYPY
@@ -1337,9 +1341,6 @@ static Py_ssize_t __Pyx_zeros[] = {0, 0, 0, 0, 0, 0, 0, 0};
 static Py_ssize_t __Pyx_minusones[] = {-1, -1, -1, -1, -1, -1, -1, -1};
 
 /* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
-
-/* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 /* RealImag.proto */
@@ -1446,6 +1447,9 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_enum__NPY_TYPES(enum NPY_TYPES v
 /* CIntFromPy.proto */
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
+
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
 
@@ -1529,6 +1533,8 @@ static const char __pyx_k_numpy[] = "numpy";
 static const char __pyx_k_point[] = "point";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_stack[] = "stack";
+static const char __pyx_k_width[] = "width";
+static const char __pyx_k_height[] = "height";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_random[] = "random";
 static const char __pyx_k_shuffle[] = "shuffle";
@@ -1577,6 +1583,7 @@ static PyObject *__pyx_n_s_collections;
 static PyObject *__pyx_n_s_current_point;
 static PyObject *__pyx_n_s_each;
 static PyObject *__pyx_n_s_grid;
+static PyObject *__pyx_n_s_height;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_int;
 static PyObject *__pyx_n_s_last_direction_char;
@@ -1604,15 +1611,15 @@ static PyObject *__pyx_n_s_starting_point;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_kp_u_unknown_dtype_code_in_numpy_pxd;
 static PyObject *__pyx_n_s_valid_point;
+static PyObject *__pyx_n_s_width;
 static PyObject *__pyx_n_s_x;
 static PyObject *__pyx_n_s_y;
-static PyObject *__pyx_pf_4maze_valid_point(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_point, PyArrayObject *__pyx_v_grid); /* proto */
-static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_point, PyArrayObject *__pyx_v_grid); /* proto */
-static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_starting_point, PyArrayObject *__pyx_v_grid); /* proto */
+static PyObject *__pyx_pf_4maze_valid_point(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_x, int __pyx_v_y, PyArrayObject *__pyx_v_grid, int __pyx_v_width, CYTHON_UNUSED int __pyx_v_height); /* proto */
+static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_point, PyArrayObject *__pyx_v_grid, int __pyx_v_width, int __pyx_v_height); /* proto */
+static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_starting_point, PyArrayObject *__pyx_v_grid, int __pyx_v_width, int __pyx_v_height); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static __Pyx_CachedCFunction __pyx_umethod_PyList_Type_pop = {0, &__pyx_n_s_pop, 0, 0, 0};
-static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
 static PyObject *__pyx_int_3;
@@ -1636,27 +1643,33 @@ static PyObject *__pyx_codeobj__15;
 /* "maze.pyx":18
  * 
  * 
- * def valid_point(point, np.ndarray[DTYPE_t, ndim=2] grid):             # <<<<<<<<<<<<<<
- *     if 0 <= point.x <= (grid.shape[1] - 1) and 0 <= point.y <= (grid.shape[0] - 1):
- *         if grid[point] == 0:
+ * def valid_point(int x, int y, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):             # <<<<<<<<<<<<<<
+ *     if 0 <= x <= (width - 1) and 0 <= y <= (grid.shape[0] - 1):
+ *         if grid[y, x] == 0:
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4maze_1valid_point(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static PyMethodDef __pyx_mdef_4maze_1valid_point = {"valid_point", (PyCFunction)__pyx_pw_4maze_1valid_point, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_4maze_1valid_point(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_point = 0;
+  int __pyx_v_x;
+  int __pyx_v_y;
   PyArrayObject *__pyx_v_grid = 0;
+  int __pyx_v_width;
+  CYTHON_UNUSED int __pyx_v_height;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("valid_point (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_point,&__pyx_n_s_grid,0};
-    PyObject* values[2] = {0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_x,&__pyx_n_s_y,&__pyx_n_s_grid,&__pyx_n_s_width,&__pyx_n_s_height,0};
+    PyObject* values[5] = {0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
         case  0: break;
@@ -1665,36 +1678,57 @@ static PyObject *__pyx_pw_4maze_1valid_point(PyObject *__pyx_self, PyObject *__p
       kw_args = PyDict_Size(__pyx_kwds);
       switch (pos_args) {
         case  0:
-        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_point)) != 0)) kw_args--;
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else goto __pyx_L5_argtuple_error;
         case  1:
-        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_grid)) != 0)) kw_args--;
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("valid_point", 1, 2, 2, 1); __PYX_ERR(0, 18, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("valid_point", 1, 5, 5, 1); __PYX_ERR(0, 18, __pyx_L3_error)
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_grid)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("valid_point", 1, 5, 5, 2); __PYX_ERR(0, 18, __pyx_L3_error)
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_width)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("valid_point", 1, 5, 5, 3); __PYX_ERR(0, 18, __pyx_L3_error)
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_height)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("valid_point", 1, 5, 5, 4); __PYX_ERR(0, 18, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "valid_point") < 0)) __PYX_ERR(0, 18, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
     }
-    __pyx_v_point = values[0];
-    __pyx_v_grid = ((PyArrayObject *)values[1]);
+    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L3_error)
+    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L3_error)
+    __pyx_v_grid = ((PyArrayObject *)values[2]);
+    __pyx_v_width = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_width == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L3_error)
+    __pyx_v_height = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_height == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("valid_point", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 18, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("valid_point", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 18, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("maze.valid_point", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_grid), __pyx_ptype_5numpy_ndarray, 1, "grid", 0))) __PYX_ERR(0, 18, __pyx_L1_error)
-  __pyx_r = __pyx_pf_4maze_valid_point(__pyx_self, __pyx_v_point, __pyx_v_grid);
+  __pyx_r = __pyx_pf_4maze_valid_point(__pyx_self, __pyx_v_x, __pyx_v_y, __pyx_v_grid, __pyx_v_width, __pyx_v_height);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1705,16 +1739,17 @@ static PyObject *__pyx_pw_4maze_1valid_point(PyObject *__pyx_self, PyObject *__p
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4maze_valid_point(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_point, PyArrayObject *__pyx_v_grid) {
+static PyObject *__pyx_pf_4maze_valid_point(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_x, int __pyx_v_y, PyArrayObject *__pyx_v_grid, int __pyx_v_width, CYTHON_UNUSED int __pyx_v_height) {
   __Pyx_LocalBuf_ND __pyx_pybuffernd_grid;
   __Pyx_Buffer __pyx_pybuffer_grid;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  int __pyx_t_5;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  Py_ssize_t __pyx_t_5;
+  int __pyx_t_6;
   __Pyx_RefNannySetupContext("valid_point", 0);
   __pyx_pybuffer_grid.pybuffer.buf = NULL;
   __pyx_pybuffer_grid.refcount = 0;
@@ -1728,65 +1763,58 @@ static PyObject *__pyx_pf_4maze_valid_point(CYTHON_UNUSED PyObject *__pyx_self, 
 
   /* "maze.pyx":19
  * 
- * def valid_point(point, np.ndarray[DTYPE_t, ndim=2] grid):
- *     if 0 <= point.x <= (grid.shape[1] - 1) and 0 <= point.y <= (grid.shape[0] - 1):             # <<<<<<<<<<<<<<
- *         if grid[point] == 0:
+ * def valid_point(int x, int y, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):
+ *     if 0 <= x <= (width - 1) and 0 <= y <= (grid.shape[0] - 1):             # <<<<<<<<<<<<<<
+ *         if grid[y, x] == 0:
  *             return True
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_int_0, __pyx_t_2, Py_LE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
-  if (__Pyx_PyObject_IsTrue(__pyx_t_3)) {
-    __Pyx_DECREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyInt_From_long(((__pyx_v_grid->dimensions[1]) - 1)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 19, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_4, Py_LE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_2 = (0 <= __pyx_v_x);
+  if (__pyx_t_2) {
+    __pyx_t_2 = (__pyx_v_x <= (__pyx_v_width - 1));
   }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (__pyx_t_5) {
+  __pyx_t_3 = (__pyx_t_2 != 0);
+  if (__pyx_t_3) {
   } else {
-    __pyx_t_1 = __pyx_t_5;
+    __pyx_t_1 = __pyx_t_3;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_int_0, __pyx_t_3, Py_LE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
-  if (__Pyx_PyObject_IsTrue(__pyx_t_2)) {
-    __Pyx_DECREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyInt_From_long(((__pyx_v_grid->dimensions[0]) - 1)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 19, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_t_4, Py_LE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_3 = (0 <= __pyx_v_y);
+  if (__pyx_t_3) {
+    __pyx_t_3 = (__pyx_v_y <= ((__pyx_v_grid->dimensions[0]) - 1));
   }
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_1 = __pyx_t_5;
+  __pyx_t_2 = (__pyx_t_3 != 0);
+  __pyx_t_1 = __pyx_t_2;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
     /* "maze.pyx":20
- * def valid_point(point, np.ndarray[DTYPE_t, ndim=2] grid):
- *     if 0 <= point.x <= (grid.shape[1] - 1) and 0 <= point.y <= (grid.shape[0] - 1):
- *         if grid[point] == 0:             # <<<<<<<<<<<<<<
+ * def valid_point(int x, int y, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):
+ *     if 0 <= x <= (width - 1) and 0 <= y <= (grid.shape[0] - 1):
+ *         if grid[y, x] == 0:             # <<<<<<<<<<<<<<
  *             return True
  *     return False
  */
-    __pyx_t_2 = PyObject_GetItem(((PyObject *)__pyx_v_grid), __pyx_v_point); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyInt_EqObjC(__pyx_t_2, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 20, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 20, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_4 = __pyx_v_y;
+    __pyx_t_5 = __pyx_v_x;
+    __pyx_t_6 = -1;
+    if (__pyx_t_4 < 0) {
+      __pyx_t_4 += __pyx_pybuffernd_grid.diminfo[0].shape;
+      if (unlikely(__pyx_t_4 < 0)) __pyx_t_6 = 0;
+    } else if (unlikely(__pyx_t_4 >= __pyx_pybuffernd_grid.diminfo[0].shape)) __pyx_t_6 = 0;
+    if (__pyx_t_5 < 0) {
+      __pyx_t_5 += __pyx_pybuffernd_grid.diminfo[1].shape;
+      if (unlikely(__pyx_t_5 < 0)) __pyx_t_6 = 1;
+    } else if (unlikely(__pyx_t_5 >= __pyx_pybuffernd_grid.diminfo[1].shape)) __pyx_t_6 = 1;
+    if (unlikely(__pyx_t_6 != -1)) {
+      __Pyx_RaiseBufferIndexError(__pyx_t_6);
+      __PYX_ERR(0, 20, __pyx_L1_error)
+    }
+    __pyx_t_1 = (((*__Pyx_BufPtrStrided2d(__pyx_t_4maze_DTYPE_t *, __pyx_pybuffernd_grid.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_grid.diminfo[0].strides, __pyx_t_5, __pyx_pybuffernd_grid.diminfo[1].strides)) == 0) != 0);
     if (__pyx_t_1) {
 
       /* "maze.pyx":21
- *     if 0 <= point.x <= (grid.shape[1] - 1) and 0 <= point.y <= (grid.shape[0] - 1):
- *         if grid[point] == 0:
+ *     if 0 <= x <= (width - 1) and 0 <= y <= (grid.shape[0] - 1):
+ *         if grid[y, x] == 0:
  *             return True             # <<<<<<<<<<<<<<
  *     return False
  * 
@@ -1797,9 +1825,9 @@ static PyObject *__pyx_pf_4maze_valid_point(CYTHON_UNUSED PyObject *__pyx_self, 
       goto __pyx_L0;
 
       /* "maze.pyx":20
- * def valid_point(point, np.ndarray[DTYPE_t, ndim=2] grid):
- *     if 0 <= point.x <= (grid.shape[1] - 1) and 0 <= point.y <= (grid.shape[0] - 1):
- *         if grid[point] == 0:             # <<<<<<<<<<<<<<
+ * def valid_point(int x, int y, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):
+ *     if 0 <= x <= (width - 1) and 0 <= y <= (grid.shape[0] - 1):
+ *         if grid[y, x] == 0:             # <<<<<<<<<<<<<<
  *             return True
  *     return False
  */
@@ -1807,15 +1835,15 @@ static PyObject *__pyx_pf_4maze_valid_point(CYTHON_UNUSED PyObject *__pyx_self, 
 
     /* "maze.pyx":19
  * 
- * def valid_point(point, np.ndarray[DTYPE_t, ndim=2] grid):
- *     if 0 <= point.x <= (grid.shape[1] - 1) and 0 <= point.y <= (grid.shape[0] - 1):             # <<<<<<<<<<<<<<
- *         if grid[point] == 0:
+ * def valid_point(int x, int y, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):
+ *     if 0 <= x <= (width - 1) and 0 <= y <= (grid.shape[0] - 1):             # <<<<<<<<<<<<<<
+ *         if grid[y, x] == 0:
  *             return True
  */
   }
 
   /* "maze.pyx":22
- *         if grid[point] == 0:
+ *         if grid[y, x] == 0:
  *             return True
  *     return False             # <<<<<<<<<<<<<<
  * 
@@ -1829,16 +1857,13 @@ static PyObject *__pyx_pf_4maze_valid_point(CYTHON_UNUSED PyObject *__pyx_self, 
   /* "maze.pyx":18
  * 
  * 
- * def valid_point(point, np.ndarray[DTYPE_t, ndim=2] grid):             # <<<<<<<<<<<<<<
- *     if 0 <= point.x <= (grid.shape[1] - 1) and 0 <= point.y <= (grid.shape[0] - 1):
- *         if grid[point] == 0:
+ * def valid_point(int x, int y, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):             # <<<<<<<<<<<<<<
+ *     if 0 <= x <= (width - 1) and 0 <= y <= (grid.shape[0] - 1):
+ *         if grid[y, x] == 0:
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -1859,7 +1884,7 @@ static PyObject *__pyx_pf_4maze_valid_point(CYTHON_UNUSED PyObject *__pyx_self, 
 /* "maze.pyx":25
  * 
  * 
- * def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid):             # <<<<<<<<<<<<<<
+ * def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):             # <<<<<<<<<<<<<<
  *     random_directions = [1, 2, 3, 4]
  * 
  */
@@ -1870,16 +1895,20 @@ static PyMethodDef __pyx_mdef_4maze_3check_surrounding = {"check_surrounding", (
 static PyObject *__pyx_pw_4maze_3check_surrounding(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_point = 0;
   PyArrayObject *__pyx_v_grid = 0;
+  int __pyx_v_width;
+  int __pyx_v_height;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("check_surrounding (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_point,&__pyx_n_s_grid,0};
-    PyObject* values[2] = {0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_point,&__pyx_n_s_grid,&__pyx_n_s_width,&__pyx_n_s_height,0};
+    PyObject* values[4] = {0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
         case  0: break;
@@ -1893,31 +1922,45 @@ static PyObject *__pyx_pw_4maze_3check_surrounding(PyObject *__pyx_self, PyObjec
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_grid)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("check_surrounding", 1, 2, 2, 1); __PYX_ERR(0, 25, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("check_surrounding", 1, 4, 4, 1); __PYX_ERR(0, 25, __pyx_L3_error)
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_width)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("check_surrounding", 1, 4, 4, 2); __PYX_ERR(0, 25, __pyx_L3_error)
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_height)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("check_surrounding", 1, 4, 4, 3); __PYX_ERR(0, 25, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "check_surrounding") < 0)) __PYX_ERR(0, 25, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
     }
     __pyx_v_point = values[0];
     __pyx_v_grid = ((PyArrayObject *)values[1]);
+    __pyx_v_width = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_width == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 25, __pyx_L3_error)
+    __pyx_v_height = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_height == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 25, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("check_surrounding", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 25, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("check_surrounding", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 25, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("maze.check_surrounding", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_grid), __pyx_ptype_5numpy_ndarray, 1, "grid", 0))) __PYX_ERR(0, 25, __pyx_L1_error)
-  __pyx_r = __pyx_pf_4maze_2check_surrounding(__pyx_self, __pyx_v_point, __pyx_v_grid);
+  __pyx_r = __pyx_pf_4maze_2check_surrounding(__pyx_self, __pyx_v_point, __pyx_v_grid, __pyx_v_width, __pyx_v_height);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1928,7 +1971,7 @@ static PyObject *__pyx_pw_4maze_3check_surrounding(PyObject *__pyx_self, PyObjec
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_point, PyArrayObject *__pyx_v_grid) {
+static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_point, PyArrayObject *__pyx_v_grid, int __pyx_v_width, int __pyx_v_height) {
   PyObject *__pyx_v_random_directions = NULL;
   PyObject *__pyx_v_each = NULL;
   PyObject *__pyx_v_new_point = NULL;
@@ -1943,7 +1986,11 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
   Py_ssize_t __pyx_t_5;
   int __pyx_t_6;
   PyObject *__pyx_t_7 = NULL;
-  int __pyx_t_8;
+  PyObject *__pyx_t_8 = NULL;
+  PyObject *__pyx_t_9 = NULL;
+  PyObject *__pyx_t_10 = NULL;
+  int __pyx_t_11;
+  PyObject *__pyx_t_12 = NULL;
   __Pyx_RefNannySetupContext("check_surrounding", 0);
   __pyx_pybuffer_grid.pybuffer.buf = NULL;
   __pyx_pybuffer_grid.refcount = 0;
@@ -1957,7 +2004,7 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
 
   /* "maze.pyx":26
  * 
- * def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid):
+ * def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):
  *     random_directions = [1, 2, 3, 4]             # <<<<<<<<<<<<<<
  * 
  *     random.shuffle(random_directions)
@@ -2060,7 +2107,7 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
  * 
  *         if each == 1:             # <<<<<<<<<<<<<<
  *             new_point = Point(x=point.x + 1, y=point.y)
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  */
     __pyx_t_3 = __Pyx_PyInt_EqObjC(__pyx_v_each, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
@@ -2072,7 +2119,7 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
  * 
  *         if each == 1:
  *             new_point = Point(x=point.x + 1, y=point.y)             # <<<<<<<<<<<<<<
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  *                 return new_point, 1
  */
       __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_Point); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)
@@ -2100,55 +2147,80 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
       /* "maze.pyx":34
  *         if each == 1:
  *             new_point = Point(x=point.x + 1, y=point.y)
- *             if valid_point(new_point, grid):             # <<<<<<<<<<<<<<
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):             # <<<<<<<<<<<<<<
  *                 return new_point, 1
  * 
  */
       __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_valid_point); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 34, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_3 = NULL;
-      __pyx_t_8 = 0;
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_new_point, __pyx_n_s_x); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 34, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_new_point, __pyx_n_s_y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_width); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 34, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_height); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 34, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_9);
+      __pyx_t_10 = NULL;
+      __pyx_t_11 = 0;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-        __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
-        if (likely(__pyx_t_3)) {
+        __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_4);
+        if (likely(__pyx_t_10)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-          __Pyx_INCREF(__pyx_t_3);
+          __Pyx_INCREF(__pyx_t_10);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_4, function);
-          __pyx_t_8 = 1;
+          __pyx_t_11 = 1;
         }
       }
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_4)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_new_point, ((PyObject *)__pyx_v_grid)};
-        __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 34, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+        PyObject *__pyx_temp[6] = {__pyx_t_10, __pyx_t_3, __pyx_t_2, ((PyObject *)__pyx_v_grid), __pyx_t_8, __pyx_t_9};
+        __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_11, 5+__pyx_t_11); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 34, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
         __Pyx_GOTREF(__pyx_t_7);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       } else
       #endif
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_new_point, ((PyObject *)__pyx_v_grid)};
-        __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 34, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+        PyObject *__pyx_temp[6] = {__pyx_t_10, __pyx_t_3, __pyx_t_2, ((PyObject *)__pyx_v_grid), __pyx_t_8, __pyx_t_9};
+        __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_11, 5+__pyx_t_11); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 34, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
         __Pyx_GOTREF(__pyx_t_7);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       } else
       #endif
       {
-        __pyx_t_2 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        if (__pyx_t_3) {
-          __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3); __pyx_t_3 = NULL;
+        __pyx_t_12 = PyTuple_New(5+__pyx_t_11); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 34, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_12);
+        if (__pyx_t_10) {
+          __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_10); __pyx_t_10 = NULL;
         }
-        __Pyx_INCREF(__pyx_v_new_point);
-        __Pyx_GIVEREF(__pyx_v_new_point);
-        PyTuple_SET_ITEM(__pyx_t_2, 0+__pyx_t_8, __pyx_v_new_point);
+        __Pyx_GIVEREF(__pyx_t_3);
+        PyTuple_SET_ITEM(__pyx_t_12, 0+__pyx_t_11, __pyx_t_3);
+        __Pyx_GIVEREF(__pyx_t_2);
+        PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_11, __pyx_t_2);
         __Pyx_INCREF(((PyObject *)__pyx_v_grid));
         __Pyx_GIVEREF(((PyObject *)__pyx_v_grid));
-        PyTuple_SET_ITEM(__pyx_t_2, 1+__pyx_t_8, ((PyObject *)__pyx_v_grid));
-        __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 34, __pyx_L1_error)
+        PyTuple_SET_ITEM(__pyx_t_12, 2+__pyx_t_11, ((PyObject *)__pyx_v_grid));
+        __Pyx_GIVEREF(__pyx_t_8);
+        PyTuple_SET_ITEM(__pyx_t_12, 3+__pyx_t_11, __pyx_t_8);
+        __Pyx_GIVEREF(__pyx_t_9);
+        PyTuple_SET_ITEM(__pyx_t_12, 4+__pyx_t_11, __pyx_t_9);
+        __pyx_t_3 = 0;
+        __pyx_t_2 = 0;
+        __pyx_t_8 = 0;
+        __pyx_t_9 = 0;
+        __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_12, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 34, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 34, __pyx_L1_error)
@@ -2157,7 +2229,7 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
 
         /* "maze.pyx":35
  *             new_point = Point(x=point.x + 1, y=point.y)
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  *                 return new_point, 1             # <<<<<<<<<<<<<<
  * 
  *         elif each == 2:
@@ -2179,7 +2251,7 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
         /* "maze.pyx":34
  *         if each == 1:
  *             new_point = Point(x=point.x + 1, y=point.y)
- *             if valid_point(new_point, grid):             # <<<<<<<<<<<<<<
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):             # <<<<<<<<<<<<<<
  *                 return new_point, 1
  * 
  */
@@ -2190,7 +2262,7 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
  * 
  *         if each == 1:             # <<<<<<<<<<<<<<
  *             new_point = Point(x=point.x + 1, y=point.y)
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  */
       goto __pyx_L5;
     }
@@ -2200,7 +2272,7 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
  * 
  *         elif each == 2:             # <<<<<<<<<<<<<<
  *             new_point = Point(x=point.x - 1, y=point.y)
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  */
     __pyx_t_7 = __Pyx_PyInt_EqObjC(__pyx_v_each, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
@@ -2212,114 +2284,139 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
  * 
  *         elif each == 2:
  *             new_point = Point(x=point.x - 1, y=point.y)             # <<<<<<<<<<<<<<
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  *                 return new_point, 2
  */
       __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_Point); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 38, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_3 = __Pyx_PyInt_SubtractObjC(__pyx_t_2, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_x, __pyx_t_3) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_y, __pyx_t_3) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_x); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 38, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_12);
+      __pyx_t_9 = __Pyx_PyInt_SubtractObjC(__pyx_t_12, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 38, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_9);
+      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_x, __pyx_t_9) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_y); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 38, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_9);
+      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_y, __pyx_t_9) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 38, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_XDECREF_SET(__pyx_v_new_point, __pyx_t_3);
-      __pyx_t_3 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_new_point, __pyx_t_9);
+      __pyx_t_9 = 0;
 
       /* "maze.pyx":39
  *         elif each == 2:
  *             new_point = Point(x=point.x - 1, y=point.y)
- *             if valid_point(new_point, grid):             # <<<<<<<<<<<<<<
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):             # <<<<<<<<<<<<<<
  *                 return new_point, 2
  * 
  */
       __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_valid_point); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_7 = NULL;
-      __pyx_t_8 = 0;
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_new_point, __pyx_n_s_x); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 39, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_v_new_point, __pyx_n_s_y); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 39, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_12);
+      __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_width); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 39, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_height); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_3 = NULL;
+      __pyx_t_11 = 0;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-        __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_4);
-        if (likely(__pyx_t_7)) {
+        __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
+        if (likely(__pyx_t_3)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-          __Pyx_INCREF(__pyx_t_7);
+          __Pyx_INCREF(__pyx_t_3);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_4, function);
-          __pyx_t_8 = 1;
+          __pyx_t_11 = 1;
         }
       }
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_4)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_v_new_point, ((PyObject *)__pyx_v_grid)};
-        __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __Pyx_GOTREF(__pyx_t_3);
+        PyObject *__pyx_temp[6] = {__pyx_t_3, __pyx_t_7, __pyx_t_12, ((PyObject *)__pyx_v_grid), __pyx_t_8, __pyx_t_2};
+        __pyx_t_9 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_11, 5+__pyx_t_11); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 39, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __Pyx_GOTREF(__pyx_t_9);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       } else
       #endif
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_v_new_point, ((PyObject *)__pyx_v_grid)};
-        __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __Pyx_GOTREF(__pyx_t_3);
+        PyObject *__pyx_temp[6] = {__pyx_t_3, __pyx_t_7, __pyx_t_12, ((PyObject *)__pyx_v_grid), __pyx_t_8, __pyx_t_2};
+        __pyx_t_9 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_11, 5+__pyx_t_11); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 39, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __Pyx_GOTREF(__pyx_t_9);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       } else
       #endif
       {
-        __pyx_t_2 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        if (__pyx_t_7) {
-          __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_7); __pyx_t_7 = NULL;
+        __pyx_t_10 = PyTuple_New(5+__pyx_t_11); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 39, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        if (__pyx_t_3) {
+          __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_3); __pyx_t_3 = NULL;
         }
-        __Pyx_INCREF(__pyx_v_new_point);
-        __Pyx_GIVEREF(__pyx_v_new_point);
-        PyTuple_SET_ITEM(__pyx_t_2, 0+__pyx_t_8, __pyx_v_new_point);
+        __Pyx_GIVEREF(__pyx_t_7);
+        PyTuple_SET_ITEM(__pyx_t_10, 0+__pyx_t_11, __pyx_t_7);
+        __Pyx_GIVEREF(__pyx_t_12);
+        PyTuple_SET_ITEM(__pyx_t_10, 1+__pyx_t_11, __pyx_t_12);
         __Pyx_INCREF(((PyObject *)__pyx_v_grid));
         __Pyx_GIVEREF(((PyObject *)__pyx_v_grid));
-        PyTuple_SET_ITEM(__pyx_t_2, 1+__pyx_t_8, ((PyObject *)__pyx_v_grid));
-        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        PyTuple_SET_ITEM(__pyx_t_10, 2+__pyx_t_11, ((PyObject *)__pyx_v_grid));
+        __Pyx_GIVEREF(__pyx_t_8);
+        PyTuple_SET_ITEM(__pyx_t_10, 3+__pyx_t_11, __pyx_t_8);
+        __Pyx_GIVEREF(__pyx_t_2);
+        PyTuple_SET_ITEM(__pyx_t_10, 4+__pyx_t_11, __pyx_t_2);
+        __pyx_t_7 = 0;
+        __pyx_t_12 = 0;
+        __pyx_t_8 = 0;
+        __pyx_t_2 = 0;
+        __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_10, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 39, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_9);
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 39, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 39, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       if (__pyx_t_6) {
 
         /* "maze.pyx":40
  *             new_point = Point(x=point.x - 1, y=point.y)
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  *                 return new_point, 2             # <<<<<<<<<<<<<<
  * 
  *         elif each == 3:
  */
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 40, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_9);
         __Pyx_INCREF(__pyx_v_new_point);
         __Pyx_GIVEREF(__pyx_v_new_point);
-        PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_new_point);
+        PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_v_new_point);
         __Pyx_INCREF(__pyx_int_2);
         __Pyx_GIVEREF(__pyx_int_2);
-        PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_int_2);
-        __pyx_r = __pyx_t_3;
-        __pyx_t_3 = 0;
+        PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_int_2);
+        __pyx_r = __pyx_t_9;
+        __pyx_t_9 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         goto __pyx_L0;
 
         /* "maze.pyx":39
  *         elif each == 2:
  *             new_point = Point(x=point.x - 1, y=point.y)
- *             if valid_point(new_point, grid):             # <<<<<<<<<<<<<<
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):             # <<<<<<<<<<<<<<
  *                 return new_point, 2
  * 
  */
@@ -2330,7 +2427,7 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
  * 
  *         elif each == 2:             # <<<<<<<<<<<<<<
  *             new_point = Point(x=point.x - 1, y=point.y)
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  */
       goto __pyx_L5;
     }
@@ -2340,126 +2437,151 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
  * 
  *         elif each == 3:             # <<<<<<<<<<<<<<
  *             new_point = Point(x=point.x, y=point.y - 1)
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  */
-    __pyx_t_3 = __Pyx_PyInt_EqObjC(__pyx_v_each, __pyx_int_3, 3, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 42, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 42, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_9 = __Pyx_PyInt_EqObjC(__pyx_v_each, __pyx_int_3, 3, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 42, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 42, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     if (__pyx_t_6) {
 
       /* "maze.pyx":43
  * 
  *         elif each == 3:
  *             new_point = Point(x=point.x, y=point.y - 1)             # <<<<<<<<<<<<<<
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  *                 return new_point, 3
  */
-      __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_Point); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_Point); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_x); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_x, __pyx_t_10) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_y); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      __pyx_t_2 = __Pyx_PyInt_SubtractObjC(__pyx_t_10, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_x, __pyx_t_2) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_y, __pyx_t_2) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_7 = __Pyx_PyInt_SubtractObjC(__pyx_t_2, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 43, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_y, __pyx_t_7) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 43, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_XDECREF_SET(__pyx_v_new_point, __pyx_t_7);
-      __pyx_t_7 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_new_point, __pyx_t_2);
+      __pyx_t_2 = 0;
 
       /* "maze.pyx":44
  *         elif each == 3:
  *             new_point = Point(x=point.x, y=point.y - 1)
- *             if valid_point(new_point, grid):             # <<<<<<<<<<<<<<
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):             # <<<<<<<<<<<<<<
  *                 return new_point, 3
  * 
  */
       __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_valid_point); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 44, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_3 = NULL;
-      __pyx_t_8 = 0;
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_new_point, __pyx_n_s_x); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 44, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_9);
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_new_point, __pyx_n_s_y); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 44, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_width); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 44, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_height); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 44, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_12);
+      __pyx_t_7 = NULL;
+      __pyx_t_11 = 0;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-        __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
-        if (likely(__pyx_t_3)) {
+        __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_4);
+        if (likely(__pyx_t_7)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-          __Pyx_INCREF(__pyx_t_3);
+          __Pyx_INCREF(__pyx_t_7);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_4, function);
-          __pyx_t_8 = 1;
+          __pyx_t_11 = 1;
         }
       }
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_4)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_new_point, ((PyObject *)__pyx_v_grid)};
-        __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 44, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __Pyx_GOTREF(__pyx_t_7);
+        PyObject *__pyx_temp[6] = {__pyx_t_7, __pyx_t_9, __pyx_t_10, ((PyObject *)__pyx_v_grid), __pyx_t_8, __pyx_t_12};
+        __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_11, 5+__pyx_t_11); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+        __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       } else
       #endif
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_new_point, ((PyObject *)__pyx_v_grid)};
-        __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 44, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __Pyx_GOTREF(__pyx_t_7);
+        PyObject *__pyx_temp[6] = {__pyx_t_7, __pyx_t_9, __pyx_t_10, ((PyObject *)__pyx_v_grid), __pyx_t_8, __pyx_t_12};
+        __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_11, 5+__pyx_t_11); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+        __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       } else
       #endif
       {
-        __pyx_t_2 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        if (__pyx_t_3) {
-          __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3); __pyx_t_3 = NULL;
+        __pyx_t_3 = PyTuple_New(5+__pyx_t_11); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        if (__pyx_t_7) {
+          __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7); __pyx_t_7 = NULL;
         }
-        __Pyx_INCREF(__pyx_v_new_point);
-        __Pyx_GIVEREF(__pyx_v_new_point);
-        PyTuple_SET_ITEM(__pyx_t_2, 0+__pyx_t_8, __pyx_v_new_point);
+        __Pyx_GIVEREF(__pyx_t_9);
+        PyTuple_SET_ITEM(__pyx_t_3, 0+__pyx_t_11, __pyx_t_9);
+        __Pyx_GIVEREF(__pyx_t_10);
+        PyTuple_SET_ITEM(__pyx_t_3, 1+__pyx_t_11, __pyx_t_10);
         __Pyx_INCREF(((PyObject *)__pyx_v_grid));
         __Pyx_GIVEREF(((PyObject *)__pyx_v_grid));
-        PyTuple_SET_ITEM(__pyx_t_2, 1+__pyx_t_8, ((PyObject *)__pyx_v_grid));
-        __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 44, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_7);
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        PyTuple_SET_ITEM(__pyx_t_3, 2+__pyx_t_11, ((PyObject *)__pyx_v_grid));
+        __Pyx_GIVEREF(__pyx_t_8);
+        PyTuple_SET_ITEM(__pyx_t_3, 3+__pyx_t_11, __pyx_t_8);
+        __Pyx_GIVEREF(__pyx_t_12);
+        PyTuple_SET_ITEM(__pyx_t_3, 4+__pyx_t_11, __pyx_t_12);
+        __pyx_t_9 = 0;
+        __pyx_t_10 = 0;
+        __pyx_t_8 = 0;
+        __pyx_t_12 = 0;
+        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 44, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 44, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__pyx_t_6) {
 
         /* "maze.pyx":45
  *             new_point = Point(x=point.x, y=point.y - 1)
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  *                 return new_point, 3             # <<<<<<<<<<<<<<
  * 
  *         elif each == 4:
  */
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 45, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
         __Pyx_INCREF(__pyx_v_new_point);
         __Pyx_GIVEREF(__pyx_v_new_point);
-        PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_v_new_point);
+        PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_new_point);
         __Pyx_INCREF(__pyx_int_3);
         __Pyx_GIVEREF(__pyx_int_3);
-        PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_int_3);
-        __pyx_r = __pyx_t_7;
-        __pyx_t_7 = 0;
+        PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_int_3);
+        __pyx_r = __pyx_t_2;
+        __pyx_t_2 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         goto __pyx_L0;
 
         /* "maze.pyx":44
  *         elif each == 3:
  *             new_point = Point(x=point.x, y=point.y - 1)
- *             if valid_point(new_point, grid):             # <<<<<<<<<<<<<<
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):             # <<<<<<<<<<<<<<
  *                 return new_point, 3
  * 
  */
@@ -2470,7 +2592,7 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
  * 
  *         elif each == 3:             # <<<<<<<<<<<<<<
  *             new_point = Point(x=point.x, y=point.y - 1)
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  */
       goto __pyx_L5;
     }
@@ -2480,126 +2602,151 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
  * 
  *         elif each == 4:             # <<<<<<<<<<<<<<
  *             new_point = Point(x=point.x, y=point.y + 1)
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  */
-    __pyx_t_7 = __Pyx_PyInt_EqObjC(__pyx_v_each, __pyx_int_4, 4, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 47, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 47, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __pyx_t_2 = __Pyx_PyInt_EqObjC(__pyx_v_each, __pyx_int_4, 4, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 47, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_6) {
 
       /* "maze.pyx":48
  * 
  *         elif each == 4:
  *             new_point = Point(x=point.x, y=point.y + 1)             # <<<<<<<<<<<<<<
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  *                 return new_point, 4
  */
-      __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_Point); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 48, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_Point); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_x, __pyx_t_2) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_t_2, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_x); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_y, __pyx_t_3) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_x, __pyx_t_3) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_point, __pyx_n_s_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_12 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 48, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_12);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_y, __pyx_t_12) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+      __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 48, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_12);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_XDECREF_SET(__pyx_v_new_point, __pyx_t_3);
-      __pyx_t_3 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_new_point, __pyx_t_12);
+      __pyx_t_12 = 0;
 
       /* "maze.pyx":49
  *         elif each == 4:
  *             new_point = Point(x=point.x, y=point.y + 1)
- *             if valid_point(new_point, grid):             # <<<<<<<<<<<<<<
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):             # <<<<<<<<<<<<<<
  *                 return new_point, 4
  * 
  */
       __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_valid_point); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_7 = NULL;
-      __pyx_t_8 = 0;
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_new_point, __pyx_n_s_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_new_point, __pyx_n_s_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_width); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 49, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_height); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 49, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      __pyx_t_9 = NULL;
+      __pyx_t_11 = 0;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-        __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_4);
-        if (likely(__pyx_t_7)) {
+        __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_4);
+        if (likely(__pyx_t_9)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-          __Pyx_INCREF(__pyx_t_7);
+          __Pyx_INCREF(__pyx_t_9);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_4, function);
-          __pyx_t_8 = 1;
+          __pyx_t_11 = 1;
         }
       }
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_4)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_v_new_point, ((PyObject *)__pyx_v_grid)};
-        __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __Pyx_GOTREF(__pyx_t_3);
+        PyObject *__pyx_temp[6] = {__pyx_t_9, __pyx_t_2, __pyx_t_3, ((PyObject *)__pyx_v_grid), __pyx_t_8, __pyx_t_10};
+        __pyx_t_12 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_11, 5+__pyx_t_11); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 49, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+        __Pyx_GOTREF(__pyx_t_12);
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       } else
       #endif
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_v_new_point, ((PyObject *)__pyx_v_grid)};
-        __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __Pyx_GOTREF(__pyx_t_3);
+        PyObject *__pyx_temp[6] = {__pyx_t_9, __pyx_t_2, __pyx_t_3, ((PyObject *)__pyx_v_grid), __pyx_t_8, __pyx_t_10};
+        __pyx_t_12 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_11, 5+__pyx_t_11); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 49, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+        __Pyx_GOTREF(__pyx_t_12);
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       } else
       #endif
       {
-        __pyx_t_2 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        if (__pyx_t_7) {
-          __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_7); __pyx_t_7 = NULL;
+        __pyx_t_7 = PyTuple_New(5+__pyx_t_11); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 49, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        if (__pyx_t_9) {
+          __Pyx_GIVEREF(__pyx_t_9); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_9); __pyx_t_9 = NULL;
         }
-        __Pyx_INCREF(__pyx_v_new_point);
-        __Pyx_GIVEREF(__pyx_v_new_point);
-        PyTuple_SET_ITEM(__pyx_t_2, 0+__pyx_t_8, __pyx_v_new_point);
+        __Pyx_GIVEREF(__pyx_t_2);
+        PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_11, __pyx_t_2);
+        __Pyx_GIVEREF(__pyx_t_3);
+        PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_11, __pyx_t_3);
         __Pyx_INCREF(((PyObject *)__pyx_v_grid));
         __Pyx_GIVEREF(((PyObject *)__pyx_v_grid));
-        PyTuple_SET_ITEM(__pyx_t_2, 1+__pyx_t_8, ((PyObject *)__pyx_v_grid));
-        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_11, ((PyObject *)__pyx_v_grid));
+        __Pyx_GIVEREF(__pyx_t_8);
+        PyTuple_SET_ITEM(__pyx_t_7, 3+__pyx_t_11, __pyx_t_8);
+        __Pyx_GIVEREF(__pyx_t_10);
+        PyTuple_SET_ITEM(__pyx_t_7, 4+__pyx_t_11, __pyx_t_10);
+        __pyx_t_2 = 0;
+        __pyx_t_3 = 0;
+        __pyx_t_8 = 0;
+        __pyx_t_10 = 0;
+        __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 49, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_12);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 49, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_12); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 49, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       if (__pyx_t_6) {
 
         /* "maze.pyx":50
  *             new_point = Point(x=point.x, y=point.y + 1)
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  *                 return new_point, 4             # <<<<<<<<<<<<<<
  * 
  *     return False
  */
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 50, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_12);
         __Pyx_INCREF(__pyx_v_new_point);
         __Pyx_GIVEREF(__pyx_v_new_point);
-        PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_new_point);
+        PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_v_new_point);
         __Pyx_INCREF(__pyx_int_4);
         __Pyx_GIVEREF(__pyx_int_4);
-        PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_int_4);
-        __pyx_r = __pyx_t_3;
-        __pyx_t_3 = 0;
+        PyTuple_SET_ITEM(__pyx_t_12, 1, __pyx_int_4);
+        __pyx_r = __pyx_t_12;
+        __pyx_t_12 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         goto __pyx_L0;
 
         /* "maze.pyx":49
  *         elif each == 4:
  *             new_point = Point(x=point.x, y=point.y + 1)
- *             if valid_point(new_point, grid):             # <<<<<<<<<<<<<<
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):             # <<<<<<<<<<<<<<
  *                 return new_point, 4
  * 
  */
@@ -2610,7 +2757,7 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
  * 
  *         elif each == 4:             # <<<<<<<<<<<<<<
  *             new_point = Point(x=point.x, y=point.y + 1)
- *             if valid_point(new_point, grid):
+ *             if valid_point(new_point.x, new_point.y, grid, width, height):
  */
     }
     __pyx_L5:;
@@ -2640,7 +2787,7 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
   /* "maze.pyx":25
  * 
  * 
- * def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid):             # <<<<<<<<<<<<<<
+ * def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):             # <<<<<<<<<<<<<<
  *     random_directions = [1, 2, 3, 4]
  * 
  */
@@ -2652,6 +2799,10 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_12);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -2675,7 +2826,7 @@ static PyObject *__pyx_pf_4maze_2check_surrounding(CYTHON_UNUSED PyObject *__pyx
 /* "maze.pyx":55
  * 
  * 
- * def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid):             # <<<<<<<<<<<<<<
+ * def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):             # <<<<<<<<<<<<<<
  * 
  *     stack = []
  */
@@ -2686,16 +2837,20 @@ static PyMethodDef __pyx_mdef_4maze_5recursive_backtracker = {"recursive_backtra
 static PyObject *__pyx_pw_4maze_5recursive_backtracker(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_starting_point = 0;
   PyArrayObject *__pyx_v_grid = 0;
+  int __pyx_v_width;
+  int __pyx_v_height;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("recursive_backtracker (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_starting_point,&__pyx_n_s_grid,0};
-    PyObject* values[2] = {0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_starting_point,&__pyx_n_s_grid,&__pyx_n_s_width,&__pyx_n_s_height,0};
+    PyObject* values[4] = {0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
         case  0: break;
@@ -2709,31 +2864,45 @@ static PyObject *__pyx_pw_4maze_5recursive_backtracker(PyObject *__pyx_self, PyO
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_grid)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("recursive_backtracker", 1, 2, 2, 1); __PYX_ERR(0, 55, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("recursive_backtracker", 1, 4, 4, 1); __PYX_ERR(0, 55, __pyx_L3_error)
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_width)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("recursive_backtracker", 1, 4, 4, 2); __PYX_ERR(0, 55, __pyx_L3_error)
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_height)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("recursive_backtracker", 1, 4, 4, 3); __PYX_ERR(0, 55, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "recursive_backtracker") < 0)) __PYX_ERR(0, 55, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
     }
     __pyx_v_starting_point = values[0];
     __pyx_v_grid = ((PyArrayObject *)values[1]);
+    __pyx_v_width = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_width == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 55, __pyx_L3_error)
+    __pyx_v_height = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_height == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 55, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("recursive_backtracker", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 55, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("recursive_backtracker", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 55, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("maze.recursive_backtracker", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_grid), __pyx_ptype_5numpy_ndarray, 1, "grid", 0))) __PYX_ERR(0, 55, __pyx_L1_error)
-  __pyx_r = __pyx_pf_4maze_4recursive_backtracker(__pyx_self, __pyx_v_starting_point, __pyx_v_grid);
+  __pyx_r = __pyx_pf_4maze_4recursive_backtracker(__pyx_self, __pyx_v_starting_point, __pyx_v_grid, __pyx_v_width, __pyx_v_height);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2744,7 +2913,7 @@ static PyObject *__pyx_pw_4maze_5recursive_backtracker(PyObject *__pyx_self, PyO
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_starting_point, PyArrayObject *__pyx_v_grid) {
+static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_starting_point, PyArrayObject *__pyx_v_grid, int __pyx_v_width, int __pyx_v_height) {
   PyObject *__pyx_v_stack = NULL;
   PyObject *__pyx_v_current_point = NULL;
   int __pyx_v_last_direction_char;
@@ -2760,14 +2929,16 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  int __pyx_t_4;
+  PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
   int __pyx_t_6;
-  int __pyx_t_7;
-  PyObject *(*__pyx_t_8)(PyObject *);
-  PyObject *__pyx_t_9 = NULL;
-  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  PyObject *(*__pyx_t_10)(PyObject *);
   PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  PyObject *__pyx_t_13 = NULL;
   __Pyx_RefNannySetupContext("recursive_backtracker", 0);
   __pyx_pybuffer_grid.pybuffer.buf = NULL;
   __pyx_pybuffer_grid.refcount = 0;
@@ -2780,7 +2951,7 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
   __pyx_pybuffernd_grid.diminfo[0].strides = __pyx_pybuffernd_grid.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_grid.diminfo[0].shape = __pyx_pybuffernd_grid.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_grid.diminfo[1].strides = __pyx_pybuffernd_grid.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_grid.diminfo[1].shape = __pyx_pybuffernd_grid.rcbuffer->pybuffer.shape[1];
 
   /* "maze.pyx":57
- * def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid):
+ * def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):
  * 
  *     stack = []             # <<<<<<<<<<<<<<
  *     current_point = starting_point
@@ -2824,76 +2995,90 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
  * 
  *     while True:             # <<<<<<<<<<<<<<
  * 
- *         check_result = check_surrounding(current_point, grid)
+ *         check_result = check_surrounding(current_point, grid, width, height)
  */
   while (1) {
 
     /* "maze.pyx":64
  *     while True:
  * 
- *         check_result = check_surrounding(current_point, grid)             # <<<<<<<<<<<<<<
+ *         check_result = check_surrounding(current_point, grid, width, height)             # <<<<<<<<<<<<<<
  * 
  *         if check_result:
  */
     __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_check_surrounding); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 64, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = NULL;
-    __pyx_t_4 = 0;
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_width); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_height); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_5 = NULL;
+    __pyx_t_6 = 0;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-      if (likely(__pyx_t_3)) {
+      __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
+      if (likely(__pyx_t_5)) {
         PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-        __Pyx_INCREF(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_5);
         __Pyx_INCREF(function);
         __Pyx_DECREF_SET(__pyx_t_2, function);
-        __pyx_t_4 = 1;
+        __pyx_t_6 = 1;
       }
     }
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
-      PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_current_point, ((PyObject *)__pyx_v_grid)};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      PyObject *__pyx_temp[5] = {__pyx_t_5, __pyx_v_current_point, ((PyObject *)__pyx_v_grid), __pyx_t_3, __pyx_t_4};
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 4+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     } else
     #endif
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-      PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_current_point, ((PyObject *)__pyx_v_grid)};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      PyObject *__pyx_temp[5] = {__pyx_t_5, __pyx_v_current_point, ((PyObject *)__pyx_v_grid), __pyx_t_3, __pyx_t_4};
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 4+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      if (__pyx_t_3) {
-        __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
+      __pyx_t_7 = PyTuple_New(4+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 64, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      if (__pyx_t_5) {
+        __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
       }
       __Pyx_INCREF(__pyx_v_current_point);
       __Pyx_GIVEREF(__pyx_v_current_point);
-      PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_4, __pyx_v_current_point);
+      PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_6, __pyx_v_current_point);
       __Pyx_INCREF(((PyObject *)__pyx_v_grid));
       __Pyx_GIVEREF(((PyObject *)__pyx_v_grid));
-      PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, ((PyObject *)__pyx_v_grid));
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
+      PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, ((PyObject *)__pyx_v_grid));
+      __Pyx_GIVEREF(__pyx_t_3);
+      PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_6, __pyx_t_3);
+      __Pyx_GIVEREF(__pyx_t_4);
+      PyTuple_SET_ITEM(__pyx_t_7, 3+__pyx_t_6, __pyx_t_4);
+      __pyx_t_3 = 0;
+      __pyx_t_4 = 0;
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF_SET(__pyx_v_check_result, __pyx_t_1);
     __pyx_t_1 = 0;
 
     /* "maze.pyx":66
- *         check_result = check_surrounding(current_point, grid)
+ *         check_result = check_surrounding(current_point, grid, width, height)
  * 
  *         if check_result:             # <<<<<<<<<<<<<<
  *             if backtracking:
  *                 last_direction_char = grid[current_point]
  */
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_check_result); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 66, __pyx_L1_error)
-    if (__pyx_t_6) {
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_v_check_result); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 66, __pyx_L1_error)
+    if (__pyx_t_8) {
 
       /* "maze.pyx":67
  * 
@@ -2902,8 +3087,8 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
  *                 last_direction_char = grid[current_point]
  *             backtracking = False
  */
-      __pyx_t_6 = (__pyx_v_backtracking != 0);
-      if (__pyx_t_6) {
+      __pyx_t_8 = (__pyx_v_backtracking != 0);
+      if (__pyx_t_8) {
 
         /* "maze.pyx":68
  *         if check_result:
@@ -2914,9 +3099,9 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
  */
         __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_grid), __pyx_v_current_point); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_v_last_direction_char = __pyx_t_4;
+        __pyx_v_last_direction_char = __pyx_t_6;
 
         /* "maze.pyx":67
  * 
@@ -2943,7 +3128,7 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
  *             new_point, new_direction_num = check_result
  *             new_direction_char = new_direction_num
  */
-      __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_stack, __pyx_v_current_point); if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 71, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_stack, __pyx_v_current_point); if (unlikely(__pyx_t_9 == -1)) __PYX_ERR(0, 71, __pyx_L1_error)
 
       /* "maze.pyx":72
  * 
@@ -2982,20 +3167,20 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
         #endif
       } else {
         Py_ssize_t index = -1;
-        __pyx_t_5 = PyObject_GetIter(__pyx_v_check_result); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 72, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_8 = Py_TYPE(__pyx_t_5)->tp_iternext;
-        index = 0; __pyx_t_1 = __pyx_t_8(__pyx_t_5); if (unlikely(!__pyx_t_1)) goto __pyx_L7_unpacking_failed;
+        __pyx_t_7 = PyObject_GetIter(__pyx_v_check_result); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 72, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_10 = Py_TYPE(__pyx_t_7)->tp_iternext;
+        index = 0; __pyx_t_1 = __pyx_t_10(__pyx_t_7); if (unlikely(!__pyx_t_1)) goto __pyx_L7_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_1);
-        index = 1; __pyx_t_2 = __pyx_t_8(__pyx_t_5); if (unlikely(!__pyx_t_2)) goto __pyx_L7_unpacking_failed;
+        index = 1; __pyx_t_2 = __pyx_t_10(__pyx_t_7); if (unlikely(!__pyx_t_2)) goto __pyx_L7_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_2);
-        if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_5), 2) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
-        __pyx_t_8 = NULL;
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_7), 2) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
+        __pyx_t_10 = NULL;
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         goto __pyx_L8_unpacking_done;
         __pyx_L7_unpacking_failed:;
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_8 = NULL;
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __pyx_t_10 = NULL;
         if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
         __PYX_ERR(0, 72, __pyx_L1_error)
         __pyx_L8_unpacking_done:;
@@ -3044,11 +3229,11 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
  *         else:
  *             try:
  */
-      __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_new_direction_char); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 78, __pyx_L1_error)
-      __pyx_v_last_direction_char = __pyx_t_4;
+      __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_new_direction_char); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 78, __pyx_L1_error)
+      __pyx_v_last_direction_char = __pyx_t_6;
 
       /* "maze.pyx":66
- *         check_result = check_surrounding(current_point, grid)
+ *         check_result = check_surrounding(current_point, grid, width, height)
  * 
  *         if check_result:             # <<<<<<<<<<<<<<
  *             if backtracking:
@@ -3068,10 +3253,10 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
       {
         __Pyx_PyThreadState_declare
         __Pyx_PyThreadState_assign
-        __Pyx_ExceptionSave(&__pyx_t_9, &__pyx_t_10, &__pyx_t_11);
-        __Pyx_XGOTREF(__pyx_t_9);
-        __Pyx_XGOTREF(__pyx_t_10);
+        __Pyx_ExceptionSave(&__pyx_t_11, &__pyx_t_12, &__pyx_t_13);
         __Pyx_XGOTREF(__pyx_t_11);
+        __Pyx_XGOTREF(__pyx_t_12);
+        __Pyx_XGOTREF(__pyx_t_13);
         /*try:*/ {
 
           /* "maze.pyx":81
@@ -3081,8 +3266,8 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
  *                     grid[current_point] = last_direction_char
  *                 backtracking = True
  */
-          __pyx_t_6 = ((!(__pyx_v_backtracking != 0)) != 0);
-          if (__pyx_t_6) {
+          __pyx_t_8 = ((!(__pyx_v_backtracking != 0)) != 0);
+          if (__pyx_t_8) {
 
             /* "maze.pyx":82
  *             try:
@@ -3134,14 +3319,16 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
  *                     grid[current_point] = last_direction_char
  */
         }
-        __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
         __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
+        __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
         goto __pyx_L16_try_end;
         __pyx_L9_error:;
         __Pyx_PyThreadState_assign
-        __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
         __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
         __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
 
@@ -3151,13 +3338,13 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
  *             except IndexError:             # <<<<<<<<<<<<<<
  *                 break
  */
-        __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_IndexError);
-        if (__pyx_t_4) {
+        __pyx_t_6 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_IndexError);
+        if (__pyx_t_6) {
           __Pyx_AddTraceback("maze.recursive_backtracker", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_2, &__pyx_t_1, &__pyx_t_5) < 0) __PYX_ERR(0, 85, __pyx_L11_except_error)
+          if (__Pyx_GetException(&__pyx_t_2, &__pyx_t_1, &__pyx_t_7) < 0) __PYX_ERR(0, 85, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_GOTREF(__pyx_t_1);
-          __Pyx_GOTREF(__pyx_t_5);
+          __Pyx_GOTREF(__pyx_t_7);
 
           /* "maze.pyx":86
  *                 current_point = stack.pop()
@@ -3168,7 +3355,7 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
           __pyx_L18_except_break:;
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+          __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
           goto __pyx_L14_try_break;
         }
         goto __pyx_L11_except_error;
@@ -3182,17 +3369,17 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
  *                     grid[current_point] = last_direction_char
  */
         __Pyx_PyThreadState_assign
-        __Pyx_XGIVEREF(__pyx_t_9);
-        __Pyx_XGIVEREF(__pyx_t_10);
         __Pyx_XGIVEREF(__pyx_t_11);
-        __Pyx_ExceptionReset(__pyx_t_9, __pyx_t_10, __pyx_t_11);
+        __Pyx_XGIVEREF(__pyx_t_12);
+        __Pyx_XGIVEREF(__pyx_t_13);
+        __Pyx_ExceptionReset(__pyx_t_11, __pyx_t_12, __pyx_t_13);
         goto __pyx_L1_error;
         __pyx_L14_try_break:;
         __Pyx_PyThreadState_assign
-        __Pyx_XGIVEREF(__pyx_t_9);
-        __Pyx_XGIVEREF(__pyx_t_10);
         __Pyx_XGIVEREF(__pyx_t_11);
-        __Pyx_ExceptionReset(__pyx_t_9, __pyx_t_10, __pyx_t_11);
+        __Pyx_XGIVEREF(__pyx_t_12);
+        __Pyx_XGIVEREF(__pyx_t_13);
+        __Pyx_ExceptionReset(__pyx_t_11, __pyx_t_12, __pyx_t_13);
         goto __pyx_L4_break;
         __pyx_L16_try_end:;
       }
@@ -3204,7 +3391,7 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
   /* "maze.pyx":55
  * 
  * 
- * def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid):             # <<<<<<<<<<<<<<
+ * def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):             # <<<<<<<<<<<<<<
  * 
  *     stack = []
  */
@@ -3216,7 +3403,9 @@ static PyObject *__pyx_pf_4maze_4recursive_backtracker(CYTHON_UNUSED PyObject *_
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_7);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -5794,6 +5983,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_current_point, __pyx_k_current_point, sizeof(__pyx_k_current_point), 0, 0, 1, 1},
   {&__pyx_n_s_each, __pyx_k_each, sizeof(__pyx_k_each), 0, 0, 1, 1},
   {&__pyx_n_s_grid, __pyx_k_grid, sizeof(__pyx_k_grid), 0, 0, 1, 1},
+  {&__pyx_n_s_height, __pyx_k_height, sizeof(__pyx_k_height), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_int, __pyx_k_int, sizeof(__pyx_k_int), 0, 0, 1, 1},
   {&__pyx_n_s_last_direction_char, __pyx_k_last_direction_char, sizeof(__pyx_k_last_direction_char), 0, 0, 1, 1},
@@ -5821,6 +6011,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_k_unknown_dtype_code_in_numpy_pxd, sizeof(__pyx_k_unknown_dtype_code_in_numpy_pxd), 0, 1, 0, 0},
   {&__pyx_n_s_valid_point, __pyx_k_valid_point, sizeof(__pyx_k_valid_point), 0, 0, 1, 1},
+  {&__pyx_n_s_width, __pyx_k_width, sizeof(__pyx_k_width), 0, 0, 1, 1},
   {&__pyx_n_s_x, __pyx_k_x, sizeof(__pyx_k_x), 0, 0, 1, 1},
   {&__pyx_n_s_y, __pyx_k_y, sizeof(__pyx_k_y), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
@@ -5940,38 +6131,38 @@ static int __Pyx_InitCachedConstants(void) {
   /* "maze.pyx":18
  * 
  * 
- * def valid_point(point, np.ndarray[DTYPE_t, ndim=2] grid):             # <<<<<<<<<<<<<<
- *     if 0 <= point.x <= (grid.shape[1] - 1) and 0 <= point.y <= (grid.shape[0] - 1):
- *         if grid[point] == 0:
+ * def valid_point(int x, int y, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):             # <<<<<<<<<<<<<<
+ *     if 0 <= x <= (width - 1) and 0 <= y <= (grid.shape[0] - 1):
+ *         if grid[y, x] == 0:
  */
-  __pyx_tuple__10 = PyTuple_Pack(2, __pyx_n_s_point, __pyx_n_s_grid); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_tuple__10 = PyTuple_Pack(5, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_grid, __pyx_n_s_width, __pyx_n_s_height); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
-  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_converc_dev_python_maze_m, __pyx_n_s_valid_point, 18, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(5, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_converc_dev_python_maze_m, __pyx_n_s_valid_point, 18, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 18, __pyx_L1_error)
 
   /* "maze.pyx":25
  * 
  * 
- * def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid):             # <<<<<<<<<<<<<<
+ * def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):             # <<<<<<<<<<<<<<
  *     random_directions = [1, 2, 3, 4]
  * 
  */
-  __pyx_tuple__12 = PyTuple_Pack(5, __pyx_n_s_point, __pyx_n_s_grid, __pyx_n_s_random_directions, __pyx_n_s_each, __pyx_n_s_new_point); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_tuple__12 = PyTuple_Pack(7, __pyx_n_s_point, __pyx_n_s_grid, __pyx_n_s_width, __pyx_n_s_height, __pyx_n_s_random_directions, __pyx_n_s_each, __pyx_n_s_new_point); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_converc_dev_python_maze_m, __pyx_n_s_check_surrounding, 25, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(4, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_converc_dev_python_maze_m, __pyx_n_s_check_surrounding, 25, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 25, __pyx_L1_error)
 
   /* "maze.pyx":55
  * 
  * 
- * def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid):             # <<<<<<<<<<<<<<
+ * def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):             # <<<<<<<<<<<<<<
  * 
  *     stack = []
  */
-  __pyx_tuple__14 = PyTuple_Pack(10, __pyx_n_s_starting_point, __pyx_n_s_grid, __pyx_n_s_stack, __pyx_n_s_current_point, __pyx_n_s_last_direction_char, __pyx_n_s_backtracking, __pyx_n_s_check_result, __pyx_n_s_new_point, __pyx_n_s_new_direction_num, __pyx_n_s_new_direction_char); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_tuple__14 = PyTuple_Pack(12, __pyx_n_s_starting_point, __pyx_n_s_grid, __pyx_n_s_width, __pyx_n_s_height, __pyx_n_s_stack, __pyx_n_s_current_point, __pyx_n_s_last_direction_char, __pyx_n_s_backtracking, __pyx_n_s_check_result, __pyx_n_s_new_point, __pyx_n_s_new_direction_num, __pyx_n_s_new_direction_char); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(2, 0, 10, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_converc_dev_python_maze_m, __pyx_n_s_recursive_backtracker, 55, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(4, 0, 12, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_converc_dev_python_maze_m, __pyx_n_s_recursive_backtracker, 55, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -5982,7 +6173,6 @@ static int __Pyx_InitCachedConstants(void) {
 static int __Pyx_InitGlobals(void) {
   __pyx_umethod_PyList_Type_pop.type = (PyObject*)&PyList_Type;
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
-  __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -6243,9 +6433,9 @@ PyMODINIT_FUNC PyInit_maze(void)
   /* "maze.pyx":18
  * 
  * 
- * def valid_point(point, np.ndarray[DTYPE_t, ndim=2] grid):             # <<<<<<<<<<<<<<
- *     if 0 <= point.x <= (grid.shape[1] - 1) and 0 <= point.y <= (grid.shape[0] - 1):
- *         if grid[point] == 0:
+ * def valid_point(int x, int y, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):             # <<<<<<<<<<<<<<
+ *     if 0 <= x <= (width - 1) and 0 <= y <= (grid.shape[0] - 1):
+ *         if grid[y, x] == 0:
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4maze_1valid_point, NULL, __pyx_n_s_maze); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -6255,7 +6445,7 @@ PyMODINIT_FUNC PyInit_maze(void)
   /* "maze.pyx":25
  * 
  * 
- * def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid):             # <<<<<<<<<<<<<<
+ * def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):             # <<<<<<<<<<<<<<
  *     random_directions = [1, 2, 3, 4]
  * 
  */
@@ -6267,7 +6457,7 @@ PyMODINIT_FUNC PyInit_maze(void)
   /* "maze.pyx":55
  * 
  * 
- * def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid):             # <<<<<<<<<<<<<<
+ * def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):             # <<<<<<<<<<<<<<
  * 
  *     stack = []
  */
@@ -7071,90 +7261,11 @@ static CYTHON_INLINE void __Pyx_SafeReleaseBuffer(Py_buffer* info) {
   __Pyx_ReleaseBuffer(info);
 }
 
-/* PyIntBinop */
-  #if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, CYTHON_UNUSED int inplace) {
-    if (op1 == op2) {
-        Py_RETURN_TRUE;
-    }
-    #if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_CheckExact(op1))) {
-        const long b = intval;
-        long a = PyInt_AS_LONG(op1);
-        if (a == b) {
-            Py_RETURN_TRUE;
-        } else {
-            Py_RETURN_FALSE;
-        }
-    }
-    #endif
-    #if CYTHON_USE_PYLONG_INTERNALS
-    if (likely(PyLong_CheckExact(op1))) {
-        const long b = intval;
-        long a;
-        const digit* digits = ((PyLongObject*)op1)->ob_digit;
-        const Py_ssize_t size = Py_SIZE(op1);
-        if (likely(__Pyx_sst_abs(size) <= 1)) {
-            a = likely(size) ? digits[0] : 0;
-            if (size == -1) a = -a;
-        } else {
-            switch (size) {
-                case -2:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-                    }
-                case 2:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-                    }
-                case -3:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-                    }
-                case 3:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-                    }
-                case -4:
-                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-                    }
-                case 4:
-                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-                    }
-                #if PyLong_SHIFT < 30 && PyLong_SHIFT != 15
-                default: return PyLong_Type.tp_richcompare(op1, op2, Py_EQ);
-                #else
-                default: Py_RETURN_FALSE;
-                #endif
-            }
-        }
-            if (a == b) {
-                Py_RETURN_TRUE;
-            } else {
-                Py_RETURN_FALSE;
-            }
-    }
-    #endif
-    if (PyFloat_CheckExact(op1)) {
-        const long b = intval;
-        double a = PyFloat_AS_DOUBLE(op1);
-            if ((double)a == (double)b) {
-                Py_RETURN_TRUE;
-            } else {
-                Py_RETURN_FALSE;
-            }
-    }
-    return PyObject_RichCompare(op1, op2, Py_EQ);
+/* BufferIndexError */
+  static void __Pyx_RaiseBufferIndexError(int axis) {
+  PyErr_Format(PyExc_IndexError,
+     "Out of bounds on buffer access (axis %d)", axis);
 }
-#endif
 
 /* PyErrFetchRestore */
   #if CYTHON_FAST_THREAD_STATE
@@ -7417,6 +7528,91 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
     result = __Pyx_PyObject_Call(func, args, NULL);
     Py_DECREF(args);
     return result;
+}
+#endif
+
+/* PyIntBinop */
+      #if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, CYTHON_UNUSED int inplace) {
+    if (op1 == op2) {
+        Py_RETURN_TRUE;
+    }
+    #if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_CheckExact(op1))) {
+        const long b = intval;
+        long a = PyInt_AS_LONG(op1);
+        if (a == b) {
+            Py_RETURN_TRUE;
+        } else {
+            Py_RETURN_FALSE;
+        }
+    }
+    #endif
+    #if CYTHON_USE_PYLONG_INTERNALS
+    if (likely(PyLong_CheckExact(op1))) {
+        const long b = intval;
+        long a;
+        const digit* digits = ((PyLongObject*)op1)->ob_digit;
+        const Py_ssize_t size = Py_SIZE(op1);
+        if (likely(__Pyx_sst_abs(size) <= 1)) {
+            a = likely(size) ? digits[0] : 0;
+            if (size == -1) a = -a;
+        } else {
+            switch (size) {
+                case -2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+                    }
+                case 2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+                    }
+                case -3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+                    }
+                case 3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+                    }
+                case -4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+                    }
+                case 4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+                    }
+                #if PyLong_SHIFT < 30 && PyLong_SHIFT != 15
+                default: return PyLong_Type.tp_richcompare(op1, op2, Py_EQ);
+                #else
+                default: Py_RETURN_FALSE;
+                #endif
+            }
+        }
+            if (a == b) {
+                Py_RETURN_TRUE;
+            } else {
+                Py_RETURN_FALSE;
+            }
+    }
+    #endif
+    if (PyFloat_CheckExact(op1)) {
+        const long b = intval;
+        double a = PyFloat_AS_DOUBLE(op1);
+            if ((double)a == (double)b) {
+                Py_RETURN_TRUE;
+            } else {
+                Py_RETURN_FALSE;
+            }
+    }
+    return PyObject_RichCompare(op1, op2, Py_EQ);
 }
 #endif
 
@@ -8357,38 +8553,7 @@ static void __Pyx_ReleaseBuffer(Py_buffer *view) {
 #endif
 
 
-            /* CIntToPy */
-            static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
-    const long neg_one = (long) -1, const_zero = (long) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(long) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-#endif
-        }
-    } else {
-        if (sizeof(long) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-#endif
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(long),
-                                     little, !is_unsigned);
-    }
-}
-
-/* CIntFromPyVerify */
+            /* CIntFromPyVerify */
             #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
     __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
 #define __PYX_VERIFY_RETURN_INT_EXC(target_type, func_type, func_value)\
@@ -8969,6 +9134,37 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to int");
     return (int) -1;
+}
+
+/* CIntToPy */
+            static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+    const long neg_one = (long) -1, const_zero = (long) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(long) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(long) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(long),
+                                     little, !is_unsigned);
+    }
 }
 
 /* CIntFromPy */

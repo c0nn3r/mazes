@@ -15,14 +15,14 @@ from collections import namedtuple
 Point = namedtuple('Point', ['y', 'x'])
 
 
-def valid_point(point, np.ndarray[DTYPE_t, ndim=2] grid):
-    if 0 <= point.x <= (grid.shape[1] - 1) and 0 <= point.y <= (grid.shape[0] - 1):
-        if grid[point] == 0:
+def valid_point(int x, int y, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):
+    if 0 <= x <= (width - 1) and 0 <= y <= (grid.shape[0] - 1):
+        if grid[y, x] == 0:
             return True
     return False
 
 
-def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid):
+def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):
     random_directions = [1, 2, 3, 4]
 
     random.shuffle(random_directions)
@@ -31,28 +31,28 @@ def check_surrounding(point, np.ndarray[DTYPE_t, ndim=2] grid):
 
         if each == 1:
             new_point = Point(x=point.x + 1, y=point.y)
-            if valid_point(new_point, grid):
+            if valid_point(new_point.x, new_point.y, grid, width, height):
                 return new_point, 1
 
         elif each == 2:
             new_point = Point(x=point.x - 1, y=point.y)
-            if valid_point(new_point, grid):
+            if valid_point(new_point.x, new_point.y, grid, width, height):
                 return new_point, 2
 
         elif each == 3:
             new_point = Point(x=point.x, y=point.y - 1)
-            if valid_point(new_point, grid):
+            if valid_point(new_point.x, new_point.y, grid, width, height):
                 return new_point, 3
 
         elif each == 4:
             new_point = Point(x=point.x, y=point.y + 1)
-            if valid_point(new_point, grid):
+            if valid_point(new_point.x, new_point.y, grid, width, height):
                 return new_point, 4
 
     return False
 
 
-def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid):
+def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid, int width, int height):
 
     stack = []
     current_point = starting_point
@@ -61,7 +61,7 @@ def recursive_backtracker(starting_point, np.ndarray[DTYPE_t, ndim=2] grid):
 
     while True:
 
-        check_result = check_surrounding(current_point, grid)
+        check_result = check_surrounding(current_point, grid, width, height)
 
         if check_result:
             if backtracking:
