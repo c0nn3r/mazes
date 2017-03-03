@@ -68,6 +68,7 @@ def recursive_backtracker(int current_x, int current_y, np.ndarray[DTYPE_t, ndim
         if check_result:
             if backtracking:
                 last_direction = grid[current_y, current_x]
+
             backtracking = False
 
             stack.append((current_x, current_y))
