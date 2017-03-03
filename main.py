@@ -4,8 +4,8 @@ import random
 import numpy as np
 from collections import namedtuple
 
-WIDTH = 10
-HEIGHT = 10
+WIDTH = 30
+HEIGHT = 30 
 
 grid = np.full((HEIGHT, WIDTH), ' ', dtype=str)
 
@@ -17,6 +17,23 @@ def valid_point(point, grid):
         if grid[point] == ' ':
             return True
     return False
+
+
+def print_maze(grid):
+    print(((WIDTH * 2) + 1) * '_')
+
+    for y in range(HEIGHT):
+        print('|', end='')
+        for x in range(WIDTH):
+            if (y + 1 != HEIGHT and grid[y + 1, x] == 'v') or grid[y, x] == '^':
+                print(' ', end='')
+            else:
+                print('_', end='')
+            if (x + 1 != WIDTH and grid[y, x + 1] == '>') or grid[y, x] == '<':
+                print(' ', end='')
+            else:
+                print('|', end='')
+        print('')
 
 
 def check_surrounding(point, grid):
@@ -58,6 +75,11 @@ def recursive_backtracker(starting_point, grid): # TODO: Fix
     backtracking = False
 
     while True:
+        '''
+        time.sleep(1)
+        os.system('clear')
+        print_maze(grid)
+        '''
 
         check_result = check_surrounding(current_point, grid)
 
@@ -79,56 +101,12 @@ def recursive_backtracker(starting_point, grid): # TODO: Fix
                 if not backtracking:
                     grid[current_point] = last_direction_char
                 backtracking = True
-                
+
                 current_point = stack.pop()
             except IndexError:
                 break
-        os.system('clear')
-        print(grid)
-        time.sleep(.5)
 
-
-        '''
-        check_result = check_surrounding(current_point, grid)
-
-        if check_result:
-            stack.append(current_point)
-            new_point, direction = check_result
-            current_direction = direction_to_number[direction]
-
-            grid[current_point] = last_direction
-            grid[new_point] = current_direction
-
-            current_point = new_point
-            last_direction = current_direction
-        else:
-            try:
-                current_point = stack.pop()
-            except IndexError:
-                break
-        '''
-
-def scan(grid_line_partial, dir_num):
-    scan_val = 0
-    for each in grid_line_partial:
-        scan_val <<= 1
-        scan_val |= each != dir_num
-    return scan_val
-
-def grid_line_walls(grid_line, dir_num1, dir_num2):
-    a = scan(grid_line[:len(grid_line)-1], dir_num1)
-    b = scan(grid_line[1:], dir_num2)
-    return a & b
-
-def grid_walls(grid):
-    vertical_walls = [grid_line_walls(list(row), '>', '<') for row in grid]
-    swapped_grid = np.swapaxes(grid, 0, 1)
-    horizontal_walls = [grid_line_walls(list(column), 'v', '^') for column in swapped_grid]
-    return vertical_walls, horizontal_walls
 
 recursive_backtracker(Point(0, 0), grid)
 
-test_grid = np.array([['>','v','v','<'],
-                      ['v','<','x','^'],
-                      ['v','>','v','^'],
-                      ['>','^','>','^']])
+print_maze(grid)
