@@ -31,5 +31,5 @@ def print_maze(grid):
         print('')
 
 
-recursive_backtracker(Point(0, 0), grid, width=WIDTH, height=HEIGHT)
+recursive_backtracker(0, 0, grid, width=WIDTH, height=HEIGHT)
 # print_maze(grid)
