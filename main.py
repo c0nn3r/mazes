@@ -1,11 +1,10 @@
-import os
 import time
 import random
 import numpy as np
 from collections import namedtuple
 
 WIDTH = 30
-HEIGHT = 30 
+HEIGHT = 30
 
 grid = np.full((HEIGHT, WIDTH), ' ', dtype=str)
 
@@ -13,7 +12,7 @@ Point = namedtuple('Point', ['y', 'x'])
 
 
 def valid_point(point, grid):
-    if 0 <= point.x <= (WIDTH - 1) and 0 <= point.y <= (HEIGHT - 1):
+    if 0 <= point.x <= (grid.shape[1] - 1) and 0 <= point.y <= (grid.shape[0] - 1):
         if grid[point] == ' ':
             return True
     return False
@@ -66,7 +65,7 @@ def check_surrounding(point, grid):
     return False
 
 
-def recursive_backtracker(starting_point, grid): # TODO: Fix
+def recursive_backtracker(starting_point, grid):
 
     stack = []
     current_point = starting_point
@@ -75,11 +74,6 @@ def recursive_backtracker(starting_point, grid): # TODO: Fix
     backtracking = False
 
     while True:
-        '''
-        time.sleep(1)
-        os.system('clear')
-        print_maze(grid)
-        '''
 
         check_result = check_surrounding(current_point, grid)
 
@@ -101,12 +95,10 @@ def recursive_backtracker(starting_point, grid): # TODO: Fix
                 if not backtracking:
                     grid[current_point] = last_direction_char
                 backtracking = True
-
                 current_point = stack.pop()
             except IndexError:
                 break
 
 
 recursive_backtracker(Point(0, 0), grid)
-
 print_maze(grid)
