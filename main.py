@@ -5,8 +5,8 @@ from collections import namedtuple
 
 from maze import recursive_backtracker
 
-WIDTH = 1000
-HEIGHT = 1000
+WIDTH = 100
+HEIGHT = 100
 
 grid = np.full((HEIGHT, WIDTH), 0, dtype=int)
 
@@ -32,4 +32,4 @@ def print_maze(grid):
 
 
 recursive_backtracker(0, 0, grid, width=WIDTH, height=HEIGHT)
-# print_maze(grid)
+print_maze(grid)
