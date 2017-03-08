@@ -8,7 +8,10 @@ HEIGHT = 100
 
 grid = np.full((HEIGHT, WIDTH), 0, dtype=int)
 
-def print_maze(grid): print(((WIDTH * 2) + 1) * '_')
+
+def print_maze(grid):
+
+    print(((WIDTH * 2) + 1) * '_')
 
     for y in range(HEIGHT):
         print('|', end='')
